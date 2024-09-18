@@ -101,7 +101,15 @@ VALUES
    
    
    
-select *
+select 
+	o.first_name as owner_first_name,
+    	o.last_name as owner_last_name,
+    	p.pet_name,
+    	v.first_name as vet_first_name,
+    	v.last_name as vet_last_name,
+    	a.appointment_date,
+    	t.treatment_name,
+    	t.cost
 from
     patients p 
 join
@@ -120,7 +128,7 @@ order by
     a.appointment_date asc, t.cost asc;
 
    
-  with
+
    
    
 with AppointmentDetails as (
@@ -146,17 +154,8 @@ with AppointmentDetails as (
     where
         t.cost > 50
 )
-select
-    owner_first_name,
-    owner_last_name,
-    pet_name,
-    vet_first_name,
-    vet_last_name,
-    appointment_date,
-    treatment_name,
-    cost
-from
-    AppointmentDetails
+select *
+from AppointmentDetails
 group by
     owner_first_name, owner_last_name, pet_name, vet_first_name, vet_last_name, appointment_date, treatment_name, cost
 order by
