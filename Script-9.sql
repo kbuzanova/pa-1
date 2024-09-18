@@ -101,15 +101,7 @@ VALUES
    
    
    
-select
-    o.first_name as owner_first_name,
-    o.last_name as owner_last_name,
-    p.pet_name,
-    v.first_name as vet_first_name,
-    v.last_name as vet_last_name,
-    a.appointment_date,
-    t.treatment_name,
-    t.cost
+select *
 from
     patients p 
 join
