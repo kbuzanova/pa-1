@@ -180,11 +180,7 @@ VALUES
     ('Whiskers', 'Cat', 'Persian', 5, 2),
     ('Max', 'Dog', 'Beagle', 2, 3),
     ('Bella', 'Dog', 'Labrador', 4, 4),
-    ('Milo', 'Cat', 'Siamese', 1, 5);
-   
-   
-INSERT INTO old_patients (pet_name, pet_species, breed, age, owner_id)
-VALUES
+    ('Milo', 'Cat', 'Siamese', 1, 5),
     ('Luna', 'Cat', 'Maine Coon', 2, 1),
     ('Charlie', 'Dog', 'Bulldog', 4, 2),
     ('Daisy', 'Rabbit', 'Lop', 3, 3),
