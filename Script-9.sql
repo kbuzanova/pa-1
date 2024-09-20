@@ -108,22 +108,14 @@ select
     t.cost,
     count(a.appointment_id) as total_appointments,
     a.appointment_date 
-from
-    patients p
-left join
-    owners o on p.owner_id = o.owner_id
-left join 
-    appointments a on p.pet_id = a.pet_id
-left join
-    vets v on a.vet_id = v.vet_id
-left join
-    treatment t on a.appointment_id = t.appointment_id
-where
-    t.cost > 0
-group by
-    o.owner_id, p.pet_name, t.cost, a.appointment_date 
-order by
-    a.appointment_date asc, t.cost desc  
+from patients p
+left join owners o on p.owner_id = o.owner_id
+left join appointments a on p.pet_id = a.pet_id
+left join vets v on a.vet_id = v.vet_id
+left join treatment t on a.appointment_id = t.appointment_id
+where t.cost > 0
+group by o.owner_id, p.pet_name, t.cost, a.appointment_date 
+order by a.appointment_date asc, t.cost desc  
 
     
 with AppointmentDetails as (
@@ -133,22 +125,14 @@ with AppointmentDetails as (
     	t.cost,
     	count(a.appointment_id) as total_appointments,
     	a.appointment_date 
-	from
-    		patients p
-	left join
-    		owners o on p.owner_id = o.owner_id
-	left join 
-    		appointments a on p.pet_id = a.pet_id
-	left join
-   		vets v on a.vet_id = v.vet_id
-	left join
-    		treatment t on a.appointment_id = t.appointment_id
-	where
-    		t.cost > 0
-	group by
-   		o.owner_id, p.pet_name, t.cost, a.appointment_date 
-	order by
-    		a.appointment_date asc, t.cost desc  
+	from patients p
+	left join owners o on p.owner_id = o.owner_id
+	left join appointments a on p.pet_id = a.pet_id
+	left join vets v on a.vet_id = v.vet_id
+	left join treatment t on a.appointment_id = t.appointment_id
+	where t.cost > 0
+	group by o.owner_id, p.pet_name, t.cost, a.appointment_date 
+	order by a.appointment_date asc, t.cost desc  
 
 	)
 select * 
