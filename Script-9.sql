@@ -66,6 +66,7 @@ INSERT INTO patients (pet_name, pet_species, breed, age, owner_id)
 VALUES
     ('Buddy', 'Dog', 'Golden Retriever', 3, 1),
     ('Whiskers', 'Cat', 'Persian', 5, 2),
+    ('Jack', 'Cat', 'Persian', 5, 2),
     ('Max', 'Dog', 'Beagle', 2, 3),
     ('Bella', 'Dog', 'Labrador', 4, 4),
     ('Milo', 'Cat', 'Siamese', 1, 5);
@@ -94,108 +95,77 @@ VALUES
 INSERT INTO treatment (appointment_id, treatment_name, cost, notes)
 VALUES
     (1, 'Antibiotic treatment', 50.00, 'Prescribed antibiotics for 10 days.'),
-    (2, 'IV fluids', 75.00, 'Rehydration with IV fluids.'),
+    (2, 'IV fluids', 0.00, 'Rehydration with IV fluids.'),
     (3, 'Dental cleaning', 100.00, 'Full dental cleaning with sedation.'),
     (4, 'Antihistamines', 40.00, 'Antihistamines prescribed for allergies.'),
     (5, 'Eye drops', 30.00, 'Prescribed eye drops for daily use.');
    
+    
    
-   
-select 
-	o.first_name as owner_first_name,
-    	o.last_name as owner_last_name,
-    	p.pet_name,
-    	v.first_name as vet_first_name,
-    	v.last_name as vet_last_name,
-    	a.appointment_date,
-    	t.treatment_name,
-    	t.cost
+select
+    concat(o.first_name, ' ', o.last_name) as owner,
+    p.pet_name,
+    t.cost,
+    count(a.appointment_id) as total_appointments,
+    a.appointment_date 
 from
-    patients p 
-join
+    patients p
+left join
     owners o on p.owner_id = o.owner_id
-join 
+left join 
     appointments a on p.pet_id = a.pet_id
-join 
+left join
     vets v on a.vet_id = v.vet_id
-join 
+left join
     treatment t on a.appointment_id = t.appointment_id
 where
-    t.cost > 50
+    t.cost > 0
 group by
-    o.first_name, o.last_name, p.pet_name, v.first_name, v.last_name, a.appointment_date, t.treatment_name, t.cost
+    o.owner_id, p.pet_name, t.cost, a.appointment_date 
 order by
-    a.appointment_date asc, t.cost asc;
+    a.appointment_date asc, t.cost desc  
 
-   
-
-   
-   
+    
 with AppointmentDetails as (
     select
-        o.first_name as owner_first_name,
-        o.last_name as owner_last_name,
-        p.pet_name,
-        v.first_name as vet_first_name,
-        v.last_name as vet_last_name,
-        a.appointment_date,
-        t.treatment_name,
-        t.cost
-    from
-        patients p
-    join
-        owners o on p.owner_id = o.owner_id
-    join 
-        appointments a on p.pet_id = a.pet_id
-    join 
-        vets v on a.vet_id = v.vet_id
-    join 
-        treatment t on a.appointment_id = t.appointment_id
-    where
-        t.cost > 50
+    	concat(o.first_name, ' ', o.last_name) as owner,
+    	p.pet_name,
+    	t.cost,
+    	count(a.appointment_id) as total_appointments,
+    	a.appointment_date 
+	from
+    		patients p
+	left join
+    		owners o on p.owner_id = o.owner_id
+	left join 
+    		appointments a on p.pet_id = a.pet_id
+	left join
+   		vets v on a.vet_id = v.vet_id
+	left join
+    		treatment t on a.appointment_id = t.appointment_id
+	where
+    		t.cost > 0
+	group by
+   		o.owner_id, p.pet_name, t.cost, a.appointment_date 
+	order by
+    		a.appointment_date asc, t.cost desc  
+
+	)
+select * 
+from AppointmentDetails
+
+with dogs as (
+	select *
+	from patients p 
+	where p.pet_species = 'Dog'
+),
+	cats as (
+		select *
+		from patients p 
+		where p.pet_species = 'Cat'
 )
 select *
-from AppointmentDetails
-group by
-    owner_first_name, owner_last_name, pet_name, vet_first_name, vet_last_name, appointment_date, treatment_name, cost
-order by
-    appointment_date asc, cost asc;
-   
-create table old_patients
-( 
-	pet_id int auto_increment primary key,
-	pet_name varchar(50) not null, 
-	pet_species varchar(50) not null,
-	breed varchar(50),
-	age int not null,
-	owner_id int, 
-	foreign key (owner_id) references owners (owner_id)
-);
-
-
-
-INSERT INTO old_patients (pet_name, pet_species, breed, age, owner_id)
-VALUES
-    ('Buddy', 'Dog', 'Golden Retriever', 3, 1),
-    ('Whiskers', 'Cat', 'Persian', 5, 2),
-    ('Max', 'Dog', 'Beagle', 2, 3),
-    ('Bella', 'Dog', 'Labrador', 4, 4),
-    ('Milo', 'Cat', 'Siamese', 1, 5),
-    ('Luna', 'Cat', 'Maine Coon', 2, 1),
-    ('Charlie', 'Dog', 'Bulldog', 4, 2),
-    ('Daisy', 'Rabbit', 'Lop', 3, 3),
-    ('Oscar', 'Dog', 'Poodle', 6, 4),
-    ('Coco', 'Parrot', 'African Grey', 7, 5),
-    ('Max', 'Dog', 'German Shepherd', 5, 1),
-    ('Nala', 'Cat', 'Bengal', 1, 2),
-    ('Buddy', 'Dog', 'Cocker Spaniel', 3, 3),
-    ('Simba', 'Cat', 'Sphynx', 4, 4),
-    ('Bella', 'Dog', 'Shih Tzu', 2, 5);
-   
-   
-select pet_name 
-from patients 
+from dogs
 union all
-select pet_name 
-from old_patients
-   
+select *
+from cats
